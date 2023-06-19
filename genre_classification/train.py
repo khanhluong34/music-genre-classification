@@ -31,12 +31,12 @@ def train_phase(model, train_loader, criterion, optimizer, device):
     num_samples = 0
     
     model.train()
-    for i, (data, target) in enumerate(train_loader):
+    for i, data in enumerate(train_loader):
         
-        input_ids = data['input_ids'].to(device)
-        attenttion_mask = data['attention_mask'].to(device)
-        token_type_ids = data['token_type_ids'].to(device)
-        target = target.to(device)
+        input_ids = data['input_ids'].to(device, dtype=torch.long)
+        attenttion_mask = data['attention_mask'].to(device, dtype=torch.long)
+        token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
+        target = data['target'].to(device, dtype=torch.float)
          
         optimizer.zero_grad()
         logits = model(input_ids, attenttion_mask, token_type_ids)
@@ -57,12 +57,13 @@ def eval_phase(model, val_loader, criterion, device):
     correct_predictions = 0
     num_samples = 0
     with torch.no_grad():
-        for i, (data, target) in enumerate(val_loader):
-            input_ids = data['input_ids'].to(device)
-            attenttion_mask = data['attention_mask'].to(device)
-            token_type_ids = data['token_type_ids'].to(device)
-            target = target.to(device)
+        for i, data in enumerate(val_loader):
             
+            input_ids = data['input_ids'].to(device, dtype=torch.long)
+            attenttion_mask = data['attention_mask'].to(device, dtype=torch.long)
+            token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
+            target = data['target'].to(device, dtype=torch.float)
+                
             logits = model(input_ids, attenttion_mask, token_type_ids)
             loss = criterion(logits, target)
             val_loss_epoch.append(loss.item())
@@ -81,13 +82,13 @@ def test_phase(save_path, test_loader, device):
     correct_predictions = 0
     num_samples = 0
     with torch.no_grad():
-        for i, (data, target) in enumerate(test_loader):
-            input_ids = data['input_ids'].to(device)
-            attenttion_mask = data['attention_mask'].to(device)
-            token_type_ids = data['token_type_ids'].to(device)
-            target = target.to(device)
+        for i, data in enumerate(test_loader):
+            input_ids = data['input_ids'].to(device, dtype=torch.long)
+            attention_mask = data['attention_mask'].to(device, dtype=torch.long)
+            token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
+            target = data['target'].to(device, dtype=torch.float)
             
-            logits = model(input_ids, attenttion_mask, token_type_ids)
+            logits = model(input_ids, attention_mask, token_type_ids)
             _, preds = torch.max(logits, dim=1)
             _, targ = torch.max(target, dim=1)
             correct_predictions += torch.sum(preds == targ)
