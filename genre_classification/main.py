@@ -1,13 +1,15 @@
 from model import BERT_BiLSTM, BERTClassification
 from train import run_train 
 from utils import get_dataloader
+from transformers import DistilBertTokenizer
 import torch
 import os
 
 if __name__ == '__main__':
     
     data_path = 'data/data.csv'
-    train_loader, valid_loader, test_loader = get_dataloader(data_path)
+    tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+    train_loader, valid_loader, test_loader = get_dataloader(data_path, tokenizer=tokenizer)
     criterion = torch.nn.CrossEntropyLoss()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = BERTClassification()

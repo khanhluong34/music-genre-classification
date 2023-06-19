@@ -1,6 +1,6 @@
 import transformers
 from torch.utils.data import Dataset, DataLoader 
-from transformers import BertTokenizer
+from transformers import BertTokenizer, DistilBertTokenizer
 import torch
 
 # define tokenizer 

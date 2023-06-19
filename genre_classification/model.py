@@ -1,4 +1,4 @@
-from transformers import BertModel
+from transformers import BertModel, DistilBertModel
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
@@ -52,6 +52,25 @@ class BERTClassification(nn.Module):
     def __init__(self):
         super(BERTClassification, self).__init__()
         self.bert_model = BertModel.from_pretrained('bert-base-uncased', return_dict=True)
+        self.linear_classifier = Linear_Classifier()
+
+    
+    def forward(self, input_ids, attn_mask, token_type_ids):
+        outputs = self.bert_model(
+            input_ids, 
+            attention_mask=attn_mask, 
+            token_type_ids=token_type_ids
+        )
+        pooled_output = outputs[1]
+        logits = self.linear_classifier(pooled_output)
+
+        return logits
+
+class DistilBERTClassification(nn.Module):
+    
+    def __init__(self):
+        super(DistilBERTClassification, self).__init__()
+        self.bert_model = DistilBertModel.from_pretrained('distilbert-base-uncased', return_dict=True)
         self.linear_classifier = Linear_Classifier()
 
     

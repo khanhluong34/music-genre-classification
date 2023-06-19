@@ -8,7 +8,7 @@ import numpy as np
 BATCH_SIZE = 16
 NUM_WORKERS = 2
 
-def get_dataset(data_path):
+def get_dataset(data_path, tokenizer):
     data = pd.read_csv(data_path)
     # concatenate song name and song lyric
     data['lyric'] = data['song name'] + " " + data['song lyric']
@@ -40,15 +40,15 @@ def get_dataset(data_path):
     test_df = pd.concat([pd.DataFrame({"lyric": x_test}), y_test], axis=1)
     val_df.reset_index(inplace = True)
     
-    train_dataset = GenreDataset(train_df['lyric'], train_df['genre'])
-    valid_dataset = GenreDataset(val_df['lyric'], val_df['genre'])
-    test_dataset = GenreDataset(test_df['lyric'], test_df['genre'])
+    train_dataset = GenreDataset(train_df['lyric'], train_df['genre'], tokenizer=tokenizer)
+    valid_dataset = GenreDataset(val_df['lyric'], val_df['genre'], tokenizer=tokenizer)
+    test_dataset = GenreDataset(test_df['lyric'], test_df['genre'], tokenizer=tokenizer)
     
     return train_dataset, valid_dataset, test_dataset
 
-def get_dataloader(data_path, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS):
+def get_dataloader(data_path, tokenizer, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS):
     
-    train_dataset, valid_dataset, test_dataset = get_dataset(data_path)
+    train_dataset, valid_dataset, test_dataset = get_dataset(data_path, tokenizer)
     
     train_dataloader = DataLoader(train_dataset, 
                                   batch_size=batch_size, 
