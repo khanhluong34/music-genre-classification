@@ -25,23 +25,24 @@ class BERT_BiLSTM(nn.Module):
         logits = F.softmax(logits, dim=1)
         return logits
     
-class LinearClassifier(nn.Module):
+class Linear_Classifier(nn.Module):
     def __init_(self):
-        super(LinearClassifier, self).__init__()
+        super(Linear_Classifier, self).__init__()
+        
         self.dropout1 = nn.Dropout(0.3)
-        self.linear1= nn.Linear(768, 128)
+        self.fc1= nn.Linear(768, 128)
         self.relu = nn.ReLU()
         
         self.dropout2 = nn.Dropout(0.3)
-        self.linear = nn.Linear(128, 6)
+        self.fc2 = nn.Linear(128, 6)
         self.softmax = nn.Softmax(dim=1)
     def forward(self, x):
         x = self.dropout1(x)
-        x = self.linear1(x)
+        x = self.fc1(x)
         x = self.relu(x)
         
         x = self.dropout2(x)
-        x = self.linear(x)
+        x = self.fc2(x)
         x = self.softmax(x)
         return x
         
@@ -51,7 +52,7 @@ class BERTClassification(nn.Module):
     def __init__(self):
         super(BERTClassification, self).__init__()
         self.bert_model = BertModel.from_pretrained('bert-base-uncased', return_dict=True)
-        self.linear_classifier = LinearClassifier()
+        self.linear_classifier = Linear_Classifier()
 
     
     def forward(self, input_ids, attn_mask, token_type_ids):
