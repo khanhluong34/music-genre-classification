@@ -26,7 +26,7 @@ class BERT_BiLSTM(nn.Module):
         return logits
     
 class Linear_Classifier(nn.Module):
-    def __init_(self):
+    def __init__(self):
         super(Linear_Classifier, self).__init__()
         
         self.dropout1 = nn.Dropout(0.3)
