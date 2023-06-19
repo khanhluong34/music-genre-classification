@@ -31,15 +31,15 @@ def train_phase(model, train_loader, criterion, optimizer, device):
     num_samples = 0
     
     model.train()
-    for i, data in enumerate(train_loader):
+    for i, batch in enumerate(train_loader):
         
-        input_ids = data['input_ids'].to(device, dtype=torch.long)
-        attenttion_mask = data['attention_mask'].to(device, dtype=torch.long)
-        token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
-        target = data['target'].to(device, dtype=torch.float)
+        input_ids = batch[0].to(device, dtype=torch.long)
+        attention_mask = batch[1].to(device, dtype=torch.long)
+        token_type_ids = batch[2].to(device, dtype=torch.long)
+        target = batch[3].to(device, dtype=torch.float)
          
         optimizer.zero_grad()
-        logits = model(input_ids, attenttion_mask, token_type_ids)
+        logits = model(input_ids, attention_mask, token_type_ids)
         loss = criterion(logits, target)
         train_loss_epoch.append(loss.item())
         _, preds = torch.max(logits, dim=1)
@@ -57,14 +57,15 @@ def eval_phase(model, val_loader, criterion, device):
     correct_predictions = 0
     num_samples = 0
     with torch.no_grad():
-        for i, data in enumerate(val_loader):
+        for i, batch in enumerate(val_loader):
             
-            input_ids = data['input_ids'].to(device, dtype=torch.long)
-            attenttion_mask = data['attention_mask'].to(device, dtype=torch.long)
-            token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
-            target = data['target'].to(device, dtype=torch.float)
+            input_ids = batch[0].to(device, dtype=torch.long)
+            attention_mask = batch[1].to(device, dtype=torch.long)
+            token_type_ids = batch[2].to(device, dtype=torch.long)
+            target = batch[3].to(device, dtype=torch.float)
+         
                 
-            logits = model(input_ids, attenttion_mask, token_type_ids)
+            logits = model(input_ids, attention_mask, token_type_ids)
             loss = criterion(logits, target)
             val_loss_epoch.append(loss.item())
             _, preds = torch.max(logits, dim=1)
@@ -82,12 +83,12 @@ def test_phase(save_path, test_loader, device):
     correct_predictions = 0
     num_samples = 0
     with torch.no_grad():
-        for i, data in enumerate(test_loader):
-            input_ids = data['input_ids'].to(device, dtype=torch.long)
-            attention_mask = data['attention_mask'].to(device, dtype=torch.long)
-            token_type_ids = data['token_type_ids'].to(device, dtype=torch.long)
-            target = data['target'].to(device, dtype=torch.float)
-            
+        for i, batch in enumerate(test_loader):
+            input_ids = batch[0].to(device, dtype=torch.long)
+            attention_mask = batch[1].to(device, dtype=torch.long)
+            token_type_ids = batch[2].to(device, dtype=torch.long)
+            target = batch[3].to(device, dtype=torch.float)
+         
             logits = model(input_ids, attention_mask, token_type_ids)
             _, preds = torch.max(logits, dim=1)
             _, targ = torch.max(target, dim=1)

@@ -40,11 +40,10 @@ class GenreDataset(Dataset):
                                        return_tensors='pt',
                                        return_token_type_ids=True,
                                        return_attention_mask=True)
-        data = {
-            'input_ids': encoded_lyric['input_ids'].flatten(),
-            'attention_mask': encoded_lyric['attention_mask'].flatten(),
-            'token_type_ids': encoded_lyric['token_type_ids'].flatten(),
-            'target': label
-        }
+           
+        input_ids = encoded_lyric['input_ids'].flatten(),
+        attention_mask = encoded_lyric['attention_mask'].flatten(),
+        token_type_ids = encoded_lyric['token_type_ids'].flatten(),
+        target = label
         
-        return data
+        return input_ids, attention_mask, token_type_ids, target
