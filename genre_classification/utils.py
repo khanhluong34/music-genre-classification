@@ -27,9 +27,9 @@ def get_dataset(data_path, tokenizer):
     
     # change
     # split data into train, val, test
-    x_train, x_test, y_train, y_test = train_test_split(lyric, genre, test_size=0.056, random_state=43)
+    x_train, x_test, y_train, y_test = train_test_split(lyric, genre, test_size=0.05, random_state=43)
     # split train into train and val
-    x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.06, random_state=43)
+    x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.15, random_state=43)
     
     train_df = pd.concat([pd.DataFrame({"lyric": x_train}), y_train], axis=1)
     train_df.reset_index(inplace = True)
