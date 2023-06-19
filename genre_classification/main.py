@@ -1,4 +1,4 @@
-from model import BERT_BiLSTM, BERTClassification, RobertaClassification
+from model import BERT_BiLSTM, RobertaClassification
 from train import run_train 
 from utils import get_dataloader
 from transformers import RobertaTokenizer
