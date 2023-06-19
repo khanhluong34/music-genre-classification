@@ -2,11 +2,15 @@ import transformers
 from torch.utils.data import Dataset, DataLoader 
 from transformers import AutoTokenizer
 import torch
-import torch.nn.functional as F
 
 # define tokenizer 
 tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
 NUM_CLASSES = 6
+
+# one hot encode labels
+def one_hot(label, num_classes=NUM_CLASSES):
+    label_encoded = [1 if i == label - 1 else 0 for i in range(num_classes)]
+    return label_encoded
 
 class GenreDataset(Dataset):
     def __init__(self, lyrics, labels, tokenizer=tokenizer, max_length = 256, num_classes=NUM_CLASSES):
@@ -24,9 +28,9 @@ class GenreDataset(Dataset):
         raw_lyric = self.lyrics.iloc[idx]
         label = self.labels.iloc[idx]
         
-        label = F.one_hot(torch.tensor(label, dtype=torch.int64), num_classes=self.num_classes)
+        label = one_hot(label, num_classes=self.num_classes)
         # convert label to float tensor
-        label = label.type(torch.float32)
+        label = torch.FloatTensor(label)
         
         encoded_lyric = self.tokenizer(raw_lyric, 
                                        add_special_tokens=True,
