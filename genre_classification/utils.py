@@ -6,7 +6,7 @@ import os
 import numpy as np
 
 BATCH_SIZE = 16
-NUM_WORKERS = 0
+NUM_WORKERS = 2
 
 def get_dataset(data_path):
     data = pd.read_csv(data_path)
