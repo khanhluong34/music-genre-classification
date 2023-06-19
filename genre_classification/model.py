@@ -72,7 +72,7 @@ class RobertaClassification(nn.Module):
 
     
     def forward(self, input_ids, attn_mask, token_type_ids):
-        outputs = self.bert_model(
+        outputs = self.roberta(
             input_ids, 
             attention_mask=attn_mask, 
             token_type_ids=token_type_ids
