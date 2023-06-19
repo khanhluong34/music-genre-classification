@@ -40,13 +40,13 @@ def train_phase(model, train_loader, criterion, optimizer, device):
          
         optimizer.zero_grad()
         logits = model(input_ids, attenttion_mask, token_type_ids)
-        criterion = criterion(logits, target)
-        train_loss_epoch.append(criterion.item())
+        loss = criterion(logits, target)
+        train_loss_epoch.append(loss.item())
         _, preds = torch.max(logits, dim=1)
         _, targ = torch.max(target, dim=1)
         correct_predictions += torch.sum(preds == targ)
         num_samples += len(preds)
-        criterion.backward()
+        loss.backward()
         optimizer.step()
         
     return model, float(correct_predictions)/float(num_samples), np.mean(train_loss_epoch)
@@ -64,8 +64,8 @@ def eval_phase(model, val_loader, criterion, device):
             target = target.to(device)
             
             logits = model(input_ids, attenttion_mask, token_type_ids)
-            criterion = criterion(logits, target)
-            val_loss_epoch.append(criterion.item())
+            loss = criterion(logits, target)
+            val_loss_epoch.append(loss.item())
             _, preds = torch.max(logits, dim=1)
             _, targ = torch.max(target, dim=1)
             correct_predictions += torch.sum(preds == targ)
