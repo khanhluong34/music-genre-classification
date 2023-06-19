@@ -55,8 +55,7 @@ class RobertaClassificationHead(nn.Module):
         self.dropout = nn.Dropout(0.3)
         self.out_proj = nn.Linear(768, 6)
 
-    def forward(self, features, **kwargs):
-        x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
+    def forward(self, x):
         x = self.dropout(x)
         x = self.dense(x)
         x = torch.tanh(x)
