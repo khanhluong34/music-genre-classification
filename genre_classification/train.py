@@ -33,9 +33,9 @@ def train_phase(model, train_loader, criterion, optimizer, device):
     model.train()
     for i, batch in enumerate(train_loader):
         
-        input_ids = batch[0].to(device, dtype=torch.long)
-        attention_mask = batch[1].to(device, dtype=torch.long)
-        token_type_ids = batch[2].to(device, dtype=torch.long)
+        input_ids = batch[0][0].to(device, dtype=torch.long)
+        attention_mask = batch[1][0].to(device, dtype=torch.long)
+        token_type_ids = batch[2][0].to(device, dtype=torch.long)
         target = batch[3].to(device, dtype=torch.float)
          
         optimizer.zero_grad()
@@ -59,9 +59,9 @@ def eval_phase(model, val_loader, criterion, device):
     with torch.no_grad():
         for i, batch in enumerate(val_loader):
             
-            input_ids = batch[0].to(device, dtype=torch.long)
-            attention_mask = batch[1].to(device, dtype=torch.long)
-            token_type_ids = batch[2].to(device, dtype=torch.long)
+            input_ids = batch[0][0].to(device, dtype=torch.long)
+            attention_mask = batch[1][0].to(device, dtype=torch.long)
+            token_type_ids = batch[2][0].to(device, dtype=torch.long)
             target = batch[3].to(device, dtype=torch.float)
          
                 
@@ -84,9 +84,10 @@ def test_phase(save_path, test_loader, device):
     num_samples = 0
     with torch.no_grad():
         for i, batch in enumerate(test_loader):
-            input_ids = batch[0].to(device, dtype=torch.long)
-            attention_mask = batch[1].to(device, dtype=torch.long)
-            token_type_ids = batch[2].to(device, dtype=torch.long)
+            
+            input_ids = batch[0][0].to(device, dtype=torch.long)
+            attention_mask = batch[1][0].to(device, dtype=torch.long)
+            token_type_ids = batch[2][0].to(device, dtype=torch.long)
             target = batch[3].to(device, dtype=torch.float)
          
             logits = model(input_ids, attention_mask, token_type_ids)
