@@ -9,7 +9,7 @@ if __name__ == '__main__':
     
     data_path = 'data/data.csv'
     tokenizer = RobertaTokenizer.from_pretrained("roberta-base")
-    train_loader, valid_loader, test_loader = get_dataloader(data_path, tokenizer=tokenizer)
+    train_loader, valid_loader = get_dataloader(data_path, tokenizer=tokenizer)
     criterion = torch.nn.CrossEntropyLoss()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = RobertaClassification()
@@ -22,7 +22,6 @@ if __name__ == '__main__':
     run_train(model,
               train_loader,
               valid_loader,
-              test_loader,
               criterion,
               optimizer,
               device,

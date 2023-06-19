@@ -8,7 +8,7 @@ import numpy as np
 BATCH_SIZE = 16
 NUM_WORKERS = 2
 
-def get_dataset(data_path, tokenizer):
+def get_dataset(data_path, tokenizer, test=False):
     data = pd.read_csv(data_path)
     # concatenate song name and song lyric
     data['lyric'] = data['song name'] + " " + data['song lyric']
@@ -25,11 +25,14 @@ def get_dataset(data_path, tokenizer):
     lyric = data['lyric']
     genre = data['genre']
     
-    # change
+    # change 
+    if test == True:    
     # split data into train, val, test
-    x_train, x_test, y_train, y_test = train_test_split(lyric, genre, test_size=0.05, random_state=43)
-    # split train into train and val
-    x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.15, random_state=43)
+        x_train, x_test, y_train, y_test = train_test_split(lyric, genre, test_size=0.05, random_state=12)
+        # split train into train and val
+        x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.15, random_state=12)
+    else:
+        x_train, x_val, y_train, y_val = train_test_split(lyric, genre, test_size=1/9, random_state=12)
     
     train_df = pd.concat([pd.DataFrame({"lyric": x_train}), y_train], axis=1)
     train_df.reset_index(inplace = True)
@@ -37,18 +40,22 @@ def get_dataset(data_path, tokenizer):
     val_df = pd.concat([pd.DataFrame({"lyric": x_val}), y_val], axis=1)
     val_df.reset_index(inplace = True)
     
-    test_df = pd.concat([pd.DataFrame({"lyric": x_test}), y_test], axis=1)
-    val_df.reset_index(inplace = True)
-    
     train_dataset = GenreDataset(train_df['lyric'], train_df['genre'], tokenizer=tokenizer)
     valid_dataset = GenreDataset(val_df['lyric'], val_df['genre'], tokenizer=tokenizer)
-    test_dataset = GenreDataset(test_df['lyric'], test_df['genre'], tokenizer=tokenizer)
-    
-    return train_dataset, valid_dataset, test_dataset
+    if test:
+        test_df = pd.concat([pd.DataFrame({"lyric": x_test}), y_test], axis=1)
+        test_df.reset_index(inplace = True)
+        test_dataset = GenreDataset(test_df['lyric'], test_df['genre'], tokenizer=tokenizer)
+        return train_dataset, valid_dataset, test_dataset
+    else: 
+        return train_dataset, valid_dataset
 
-def get_dataloader(data_path, tokenizer, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS):
+def get_dataloader(data_path, tokenizer, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS, test=False):
     
-    train_dataset, valid_dataset, test_dataset = get_dataset(data_path, tokenizer)
+    if test == True:
+        train_dataset, valid_dataset, test_dataset = get_dataset(data_path, tokenizer, test=True)
+    else: 
+        train_dataset, valid_dataset = get_dataset(data_path, tokenizer)
     
     train_dataloader = DataLoader(train_dataset, 
                                   batch_size=batch_size, 

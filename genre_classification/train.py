@@ -2,7 +2,7 @@ import torch
 import numpy as np 
 import os
 
-def run_train(model, train_loader, val_loader, test_loader, criterion, optimizer, device, epochs, save_path):
+def run_train(model, train_loader, val_loader, criterion, optimizer, device, epochs, save_path):
     print('########################## Training Start ##########################')
     best_acc = 0
     print('\n')
