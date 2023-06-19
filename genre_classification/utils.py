@@ -3,6 +3,7 @@ from datasets import GenreDataset
 from torch.utils.data import DataLoader
 from sklearn.model_selection import train_test_split
 import os
+import numpy as np
 
 BATCH_SIZE = 16
 NUM_WORKERS = os.cpu_count()
@@ -19,8 +20,14 @@ def get_dataset(data_path):
                'POP': 4,
                'ROCK': 5}
     data['genre'] = data['category'].map(mapping)
+    
+    # convert column to numpy array
+    lyric = data['lyric'].to_numpy()
+    genre = data['genre'].to_numpy()
+    
+    # change
     # split data into train, val, test
-    x_train, x_test, y_train, y_test = train_test_split(data['lyric'], data['genre'], test_size=0.056, random_state=43)
+    x_train, x_test, y_train, y_test = train_test_split(lyric, genre, test_size=0.056, random_state=43)
     # split train into train and val
     x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.06, random_state=43)
     
