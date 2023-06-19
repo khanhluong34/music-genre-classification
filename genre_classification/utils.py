@@ -22,8 +22,8 @@ def get_dataset(data_path):
     data['genre'] = data['category'].map(mapping)
     
     # convert column to numpy array
-    lyric = data['lyric'].to_numpy()
-    genre = data['genre'].to_numpy()
+    lyric = data['lyric']
+    genre = data['genre']
     
     # change
     # split data into train, val, test
@@ -31,9 +31,18 @@ def get_dataset(data_path):
     # split train into train and val
     x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.06, random_state=43)
     
-    train_dataset = GenreDataset(x_train, y_train)
-    valid_dataset = GenreDataset(x_val, y_val)
-    test_dataset = GenreDataset(x_test, y_test)
+    train_df = pd.concat([pd.DataFrame({"lyric": x_train}), y_train], axis=1)
+    train_df.reset_index(inplace = True)
+    
+    val_df = pd.concat([pd.DataFrame({"lyric": x_val}), y_val], axis=1)
+    val_df.reset_index(inplace = True)
+    
+    test_df = pd.concat([pd.DataFrame({"lyric": x_test}), y_test], axis=1)
+    val_df.reset_index(inplace = True)
+    
+    train_dataset = GenreDataset(train_df['lyric'], train_df['genre'])
+    valid_dataset = GenreDataset(val_df['lyric'], val_df['genre'])
+    test_dataset = GenreDataset(test_df['lyric'], test_df['genre'])
     
     return train_dataset, valid_dataset, test_dataset
 
