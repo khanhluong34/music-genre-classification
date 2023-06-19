@@ -1,4 +1,4 @@
-from model import BERT_BiLSTM
+from model import BERT_BiLSTM, BERTClassification
 from train import run_train 
 from utils import get_dataloader
 import torch
@@ -10,7 +10,7 @@ if __name__ == '__main__':
     train_loader, valid_loader, test_loader = get_dataloader(data_path)
     criterion = torch.nn.CrossEntropyLoss()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    model = BERT_BiLSTM()
+    model = BERTClassification()
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-5)
     epochs = 10
     save_path = '/results'

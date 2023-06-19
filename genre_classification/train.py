@@ -1,4 +1,3 @@
-from model import BERT_BiLSTM
 import torch
 import numpy as np 
 import os
@@ -21,9 +20,7 @@ def run_train(model, train_loader, val_loader, test_loader, criterion, optimizer
     
     print('########################## End training ##########################')
     print("The best model with validation accuracy: {:.4f}".format(best_acc))
-    print("Test the best model on test set ...")
-    test_acc = test_phase(model, test_loader, device)
-    print("Test accuracy: {:.4f}".format(test_acc))
+
         
 def train_phase(model, train_loader, criterion, optimizer, device):
     train_loss_epoch = []
@@ -75,8 +72,7 @@ def eval_phase(model, val_loader, criterion, device):
             
     return float(correct_predictions)/float(num_samples), np.mean(val_loss_epoch)
 
-def test_phase(save_path, test_loader, device):
-    model = BERT_BiLSTM()
+def test_phase(model, save_path, test_loader, device):
     model.load_state_dict(torch.load(os.path.join(save_path, 'best_model.pt')))
     model.eval()
     model.to(device)
@@ -96,5 +92,5 @@ def test_phase(save_path, test_loader, device):
             correct_predictions += torch.sum(preds == targ)
             num_samples += len(preds)
     test_acc = float(correct_predictions)/float(num_samples)
-    return test_acc        
+    print("Test accuracy: {:.4f}".format(test_acc))       
    
