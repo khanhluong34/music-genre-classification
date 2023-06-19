@@ -1,6 +1,6 @@
 from model import BERT_BiLSTM
 from train import run_train 
-from utils import get_dataloaders
+from utils import get_dataloader
 import torch
 import torch.nn as nn
 import os
@@ -8,7 +8,7 @@ import os
 if __name__ == '__main__':
     
     data_path = 'data/data.csv'
-    train_loader, valid_loader, test_loader = get_dataloaders(data_path)
+    train_loader, valid_loader, test_loader = get_dataloader(data_path)
     criterion = nn.CrossEntropyLoss()
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = BERT_BiLSTM()
