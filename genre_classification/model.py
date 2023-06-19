@@ -1,4 +1,4 @@
-from transformers import BertModel, DistilBertModel
+from transformers import BertModel, RobertaModel, RobertaConfig
 import torch.nn as nn
 import torch.nn.functional as F
 import torch
@@ -46,13 +46,29 @@ class Linear_Classifier(nn.Module):
         x = self.softmax(x)
         return x
         
-        
+class RobertaClassificationHead(nn.Module):
+    """Head for sentence-level classification tasks."""
 
-class BERTClassification(nn.Module):
     def __init__(self):
-        super(BERTClassification, self).__init__()
-        self.bert_model = BertModel.from_pretrained('bert-base-uncased', return_dict=True)
-        self.linear_classifier = Linear_Classifier()
+        super().__init__()
+        self.dense = nn.Linear(768, 768)
+        self.dropout = nn.Dropout(0.3)
+        self.out_proj = nn.Linear(768, 6)
+
+    def forward(self, features, **kwargs):
+        x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
+        x = self.dropout(x)
+        x = self.dense(x)
+        x = torch.tanh(x)
+        x = self.dropout(x)
+        x = self.out_proj(x)
+        return x  
+
+class RobertaClassification(nn.Module):
+    def __init__(self):
+        super(RobertaClassification, self).__init__()
+        self.roberta = RobertaModel.from_pretrained('roberta-base')
+        self.linear_classifier = RobertaClassificationHead()
 
     
     def forward(self, input_ids, attn_mask, token_type_ids):
@@ -66,21 +82,6 @@ class BERTClassification(nn.Module):
 
         return logits
 
-class DistilBERTClassification(nn.Module):
-    
-    def __init__(self):
-        super(DistilBERTClassification, self).__init__()
-        self.bert_model = DistilBertModel.from_pretrained('distilbert-base-uncased', return_dict=True)
-        self.linear_classifier = Linear_Classifier()
 
     
-    def forward(self, input_ids, attn_mask, token_type_ids):
-        outputs = self.bert_model(
-            input_ids, 
-            attention_mask=attn_mask, 
-            token_type_ids=token_type_ids
-        )
-        pooled_output = outputs[1]
-        logits = self.linear_classifier(pooled_output)
-
-        return logits
+    
