@@ -1,10 +1,10 @@
 import transformers
 from torch.utils.data import Dataset, DataLoader 
-from transformers import AutoTokenizer
+from transformers import BertTokenizer
 import torch
 
 # define tokenizer 
-tokenizer = AutoTokenizer.from_pretrained('bert-base-uncased')
+tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 NUM_CLASSES = 6
 
 # one hot encode labels
@@ -25,7 +25,7 @@ class GenreDataset(Dataset):
     
     def __getitem__(self, idx):
         
-        raw_lyric = self.lyrics.iloc[idx]
+        raw_lyric = str(self.lyrics.iloc[idx])
         label = self.labels.iloc[idx]
         
         label = one_hot(label, num_classes=self.num_classes)
