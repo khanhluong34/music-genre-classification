@@ -24,7 +24,7 @@ class GenreDataset(Dataset):
         raw_lyric = self.lyrics.iloc[idx]
         label = self.labels.iloc[idx]
         
-        label = F.one_hot(torch.tensor(label), num_classes=self.num_classes)
+        label = F.one_hot(torch.tensor(label, dtype=float), num_classes=self.num_classes)
         
         encoded_lyric = self.tokenizer(raw_lyric, 
                                        add_special_tokens=True,
