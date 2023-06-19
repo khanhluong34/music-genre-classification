@@ -21,8 +21,8 @@ class GenreDataset(Dataset):
     
     def __getitem__(self, idx):
         
-        raw_lyric = self.lyrics[idx]
-        label = self.labels[idx]
+        raw_lyric = self.lyrics.iloc[idx]
+        label = self.labels.iloc[idx]
         
         label = F.one_hot(torch.tensor(label), num_classes=self.num_classes)
         
