@@ -52,24 +52,35 @@ def get_dataset(data_path, tokenizer, test=False):
 
 def get_dataloader(data_path, tokenizer, batch_size=BATCH_SIZE, num_workers=NUM_WORKERS, test=False):
     
-    if test == True:
+    if test:
         train_dataset, valid_dataset, test_dataset = get_dataset(data_path, tokenizer, test=True)
-    else: 
-        train_dataset, valid_dataset = get_dataset(data_path, tokenizer)
-    
-    train_dataloader = DataLoader(train_dataset, 
+        
+        train_dataloader = DataLoader(train_dataset, 
                                   batch_size=batch_size, 
                                   shuffle=True,
                                   num_workers=num_workers)
     
-    valid_dataloader = DataLoader(valid_dataset, 
-                                  batch_size=batch_size, 
-                                  shuffle=False,
-                                  num_workers=num_workers)
+        valid_dataloader = DataLoader(valid_dataset, 
+                                    batch_size=batch_size, 
+                                    shuffle=False,
+                                    num_workers=num_workers)
+        
+        test_dataloader = DataLoader(test_dataset, 
+                                    batch_size=batch_size, 
+                                    shuffle=False,
+                                    num_workers=num_workers)
+        return train_dataloader, valid_dataloader, test_dataloader
+    else: 
+        train_dataset, valid_dataset = get_dataset(data_path, tokenizer)
     
-    test_dataloader = DataLoader(test_dataset, 
-                                  batch_size=batch_size, 
-                                  shuffle=False,
-                                  num_workers=num_workers)
-    return train_dataloader, valid_dataloader, test_dataloader
+        train_dataloader = DataLoader(train_dataset, 
+                                    batch_size=batch_size, 
+                                    shuffle=True,
+                                    num_workers=num_workers)
+        
+        valid_dataloader = DataLoader(valid_dataset, 
+                                    batch_size=batch_size, 
+                                    shuffle=False,
+                                    num_workers=num_workers)
+        return train_dataloader, valid_dataloader
     
