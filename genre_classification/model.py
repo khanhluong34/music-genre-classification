@@ -54,7 +54,6 @@ class RobertaClassificationHead(nn.Module):
         self.dense = nn.Linear(768, 768)
         self.dropout = nn.Dropout(0.5)
         self.out_proj = nn.Linear(768, 6)
-        self.softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         x = self.dropout(x)
@@ -62,7 +61,6 @@ class RobertaClassificationHead(nn.Module):
         x = torch.tanh(x)
         x = self.dropout(x)
         x = self.out_proj(x)
-        x = self.softmax(x)
         return x  
 
 class RobertaClassification(nn.Module):
